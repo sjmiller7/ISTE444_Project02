@@ -1,0 +1,4 @@
+Cypher scripts for initial data creation (to run in Cypher directly)
+
+DB: neo4j
+> CREATE (test:Test {name: 'Test worked!'})
