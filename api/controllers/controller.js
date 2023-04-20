@@ -1,10 +1,11 @@
 // Neo4j connection
 var neo4j = require('neo4j-driver');
+require('dotenv').config();
 
 try {
     var driver = neo4j.driver(
         'neo4j://localhost',
-        neo4j.auth.basic('neo4j', 'fourNe0OH4j4our')
+        neo4j.auth.basic(process.env.USER, process.env.PASSWORD)
       );
     console.log('Connection estabilished')
   } catch(err) {

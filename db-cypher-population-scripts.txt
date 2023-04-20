@@ -1,4 +1,57 @@
 Cypher scripts for initial data creation (to run in Cypher directly)
 
-DB: neo4j
-> CREATE (test:Test {name: 'Test worked!'})
+# DB: neo4j
+
+CREATE (test:Test {name: 'Test worked!'})
+
+
+CREATE (hopper:Artist {name:'Edward Hopper', born:'1882', died:'1967'}),
+(sargent:Artist {name:'John Singer Sargent', born:'1856', died:'1925'}),
+(matisse:Artist {name:'Henri Matisse', born:'1869', died:'1954'}),
+(monet:Artist {name:'Claude Monet', born:'1840', died:'1926'}),
+(picasso:Artist {name:'Pablo Picasso', born:'1881', died:'1973'}),
+(rousseau:Artist {name:'Henri Rousseau', born:'1844', died:'1910'}),
+(millais:Artist {name:'Sir John Everett Millais', born:'1829', died:'1896'}),
+(gogh:Artist {name:'Vincent Van Gogh', born:'1853', died:'1890'}),
+
+(albertina:Gallery {name:'The Albertina Museum', city:'Vienna', country:'Austria'}),
+(chicago:Gallery {name:'The Art Institute of Chicago', city:'Chicaco', country:'USA'}),
+(moines:Gallery {name:'Des Moines Art Center', city:'Des Moines', country:'USA'}),
+(gemeen:Gallery {name:'The Gemeentemuseum', city:'Den Haag', country:'Netherlands'}),
+(kroller:Gallery {name:'Kröller-Müller Museum', city:'Otterlo', country:'Netherlands'}),
+(zurich:Gallery {name:'Kunsthaus Zürich', city:'Zürich', country:'Switzerland'}),
+(musee:Gallery {name:"Musée d'Orsay", city:'Paris', country:'France'}),
+(nga:Gallery {name:'National Gallery of Art', city:'Washington', country:'USA'}),
+(sfmoma:Gallery {name:'San Francisco Museum of Modern Art', city:'San Francisco', country:'USA'}),
+(tate:Gallery {name:'Tate Britian', city:'London', country:'England'}),
+(vg:Gallery {name:'Van Gogh Museum', city:'Amsterdam', country:'Netherlands'}),
+
+
+(wisteria:Art {name:'Wisteria', media:'Oil on canvas', style:'Impressionism', type:'Painting', img:'https://uploads8.wikiart.org/images/claude-monet/wisteria-1920-1.jpg!Large.jpg'}),
+(window:Art {name:'Open Window, Collioure', media:'Oil on canvas', style:'Fauvism', type:'Painting', img:'https://smarthistory.org/wp-content/uploads/2020/01/matisse-open-window-collioure-870x1049.jpg'}),
+(sea:Art {name:'The Sea at Les Saintes-Maries-de-la-Mer', media:'Oil on canvas', style:'Post-Impressionism', type:'Painting', img:'https://www.vincentvangogh.org/images/paintings/seascape-near-les-saintes-maries-de-la-mer.jpg'}),
+(med:Art {name:'Mediterranean Landscape', media:'Oil on panel', style:'Cubism', type:'Painting', img:'https://www.pablopicasso.org/images/paintings/mediterranean-landscape.jpg'}),
+(automat:Art {name:'Automat', media:'Oil on canvas', style:'American Realism', type:'Painting', img:'https://en.wikipedia.org/wiki/Automat_(Hopper)#/media/File:Automat-edward-hopper-1927.jpg'}),
+(hawk:Art {name:'Nighthawks', media:'Oil on canvas', style:'American Realism', type:'Painting', img:'https://www.artic.edu/iiif/2/831a05de-d3f6-f4fa-a460-23008dd58dda/full/843,/0/default.jpg'}),
+(ophelia:Art {name:'Ophelia', media:'Oil on canvas', type:'Painting', img:'https://media.tate.org.uk/art/images/work/N/N01/N01506_9.jpg'}),
+(walk:Art {name:'La Promenade dans la Forêt', media:'Oil on canvas', type:'Painting', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Henri_Rousseau_001.jpg/460px-Henri_Rousseau_001.jpg'}),
+(macb:Art {name:'Ellen Terry as Lady Macbeth', media:'Oil on canvas', style:'Realism', type:'Painting', img:'https://media.tate.org.uk/art/images/work/N/N02/N02053_10.jpg'}),
+(femme:Art {name:'Femme au Chapeau', media:'Oil on canvas', style:'Fauvism', type:'Painting', img:'https://www.henrimatisse.org/images/gallery/woman-with-a-hat.jpg'}),
+(almond:Art {name:'Almond Blossom', media:'Oil on canvas', style:'Post-Impressionism', type:'Painting', img:'https://www.vincentvangogh.org/images/paintings/almond-blossom.jpg'}),
+(rhone:Art {name:'Starry Night Over the Rhône', media:'Oil on canvas', style:'Post-Impressionism', type:'Painting', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Starry_Night_Over_the_Rhone.jpg/270px-Starry_Night_Over_the_Rhone.jpg'}),
+(cafe:Art {name:'Café Terrace at Night', media:'Oil on canvas', style:'Post-Impressionism', type:'Painting', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Vincent_van_Gogh_%281853-1890%29_Caf%C3%A9terras_bij_nacht_%28place_du_Forum%29_Kr%C3%B6ller-M%C3%BCller_Museum_Otterlo_23-8-2016_13-35-40.JPG/540px-Vincent_van_Gogh_%281853-1890%29_Caf%C3%A9terras_bij_nacht_%28place_du_Forum%29_Kr%C3%B6ller-M%C3%BCller_Museum_Otterlo_23-8-2016_13-35-40.JPG'}),
+
+
+(gemeen)<-[:LOCATED_IN {since:'1961'}]-(wisteria)<-[:CREATED {year:'1925'}]-(monet),
+(nga)<-[:LOCATED_IN {since:'1998'}]-(window)<-[:CREATED {year:'1905'}]-(matisse),
+(vg)<-[:LOCATED_IN {since:'1994'}]-(sea)<-[:CREATED {year:'1888'}]-(gogh),
+(albertina)<-[:LOCATED_IN]-(med)<-[:CREATED {year:'1953'}]-(picasso),
+(moines)<-[:LOCATED_IN]-(automat)<-[:CREATED {year:'1927'}]-(hopper),
+(chicago)<-[:LOCATED_IN {since:'1942'}]-(hawk)<-[:CREATED {year:'1942'}]-(hopper),
+(tate)<-[:LOCATED_IN {since:'1894'}]-(ophelia)<-[:CREATED {year:'1852'}]-(millais),
+(zurich)<-[:LOCATED_IN {since:'1939'}]-(walk)<-[:CREATED {year:'1886'}]-(rousseau),
+(tate)<-[:LOCATED_IN {since:'1906'}]-(macb)<-[:CREATED {year:'1889'}]-(sargent),
+(sfmoma)<-[:LOCATED_IN {since:'1991'}]-(femme)<-[:CREATED {year:'1905'}]-(matisse),
+(vg)<-[:LOCATED_IN {since:'1994'}]-(almond)<-[:CREATED {year:'1890'}]-(gogh),
+(musee)<-[:LOCATED_IN {since:'1995'}]-(rhone)<-[:CREATED {year:'1888'}]-(gogh),
+(kroller)<-[:LOCATED_IN]-(cafe)<-[:CREATED {year:'1888'}]-(gogh)
