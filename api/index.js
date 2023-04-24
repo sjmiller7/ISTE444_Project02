@@ -10,11 +10,14 @@ const PORT = process.env.PORT || 8000;
 // API Routing
 app.use("/gallery", router);
 
+// Logging
+const log = require("./controllers/logger-wrapper.js");
+
 // Starting server
 app.listen(PORT, (error) => {
 if (!error) {
-    console.log(`Server is listening on port ${PORT}`);
+    log.log('info', 'system', `Server is listening on port ${PORT}`);
 } else {
-    console.log(`Error: ${error}`);
+    log.log('error', 'system', `Error: ${error}`);
 }
 });
