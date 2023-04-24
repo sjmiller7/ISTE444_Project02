@@ -5,6 +5,8 @@ Cypher scripts for initial data creation (to run in Cypher directly)
 CREATE (test:Test {name: 'Test worked!'})
 
 
+
+
 CREATE (hopper:Artist {name:'Edward Hopper', born:'1882', died:'1967'}),
 (sargent:Artist {name:'John Singer Sargent', born:'1856', died:'1925'}),
 (matisse:Artist {name:'Henri Matisse', born:'1869', died:'1954'}),
@@ -55,3 +57,9 @@ CREATE (hopper:Artist {name:'Edward Hopper', born:'1882', died:'1967'}),
 (vg)<-[:LOCATED_IN {since:'1994'}]-(almond)<-[:CREATED {year:'1890'}]-(gogh),
 (musee)<-[:LOCATED_IN {since:'1995'}]-(rhone)<-[:CREATED {year:'1888'}]-(gogh),
 (kroller)<-[:LOCATED_IN]-(cafe)<-[:CREATED {year:'1888'}]-(gogh)
+
+
+
+
+
+CREATE (you:User {username:'user123', password:'$2b$10$qLEYATMogustK/qro5wULeGU1/2oXvp8pZS/7ysgJGS22SMlIOxgS'})
