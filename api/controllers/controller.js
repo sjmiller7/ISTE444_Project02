@@ -7,20 +7,24 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
+// Logging
+const log = require("./logger-wrapper.js");
+
 // DB connection
 try {
     var driver = neo4j.driver(
         'neo4j://localhost',
         neo4j.auth.basic(process.env.USER, process.env.PASSWORD)
       );
-    console.log('Database connection estabilished');
+    log.log('info', 'system', 'Database connection estabilished');
   } catch(err) {
-    console.error(`ERROR: Database connection error\n${err}\nCause: ${err.cause}`);
+    log.log('error', 'system', `ERROR: Database connection error\n${err}\nCause: ${err.cause}`);
   }
+
 
 // Connection test endpoint
 exports.test = async function (req, res) {
-    console.log("\n\nTest endpoint\n");
+    log.log('info', 'test-no-user', "Test endpoint (/gallery/test)");
     // Make session
     var session = driver.session({database: 'neo4j'});
     session
@@ -32,12 +36,12 @@ exports.test = async function (req, res) {
     // Parse & send results
     .then(result => {
         var testResult = result.records[0].get('name');
-        console.log("Result: " + testResult);
+        log.log('info', 'test-no-user', "Result: " + testResult);
         return res.send(JSON.stringify({test: testResult}));
     })
     // Catch errors
     .catch(error => {
-        console.error('ERROR: ' + error);
+        log.log('error', 'test-no-user', 'ERROR: ' + error);
     })
     // Close session
     .then(() => session.close())
@@ -45,7 +49,8 @@ exports.test = async function (req, res) {
 
 // Authentication endpoint
 exports.enter = async function (req, res) {
-  console.log(req.body.username);
+  log.log('info', req.body.username, "Auth endpoint (/gallery/enter)");
+  log.log('info', req.body.username, "Username: " + req.body.username);
   var session = driver.session({database: 'neo4j'});
   session
   .run(
@@ -57,14 +62,15 @@ exports.enter = async function (req, res) {
       bcrypt
       .compare(req.body.password, hash)
       .then(match => {
-        console.log(match);
+        log.log('info', req.body.username, "Password match: " + match);
         var token = jwt.sign({ username: req.body.username }, process.env.SECRET);
+        log.log('info', req.body.username, "JWT generated");
         return res.send(JSON.stringify({match:match, token: token}));
       })
-      .catch(err => console.error(err.message)) 
+      .catch(err => log.log('error', req.body.username, err.message)) 
   })
   .catch(error => {
-      console.log(error)
+      log.log('error', req.body.username, error)
   })
   .then(() => session.close())
 };
