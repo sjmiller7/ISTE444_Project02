@@ -17,9 +17,9 @@ router.get("/view/:artID", app.viewOne);
 router.post("/donate", app.donate);
 
 // Route for updating art piece
-//router.put("/curate", app.curate);
+router.put("/curate", app.curate);
 
 // Route for updating art piece
-//router.delete("/steal", app.steal);
+router.delete("/steal", app.steal);
 
 module.exports = router;
