@@ -16,8 +16,8 @@ const log = require("./controllers/logger-wrapper.js");
 // Starting server
 app.listen(PORT, (error) => {
 if (!error) {
-    log.log('info', 'system', `Server is listening on port ${PORT}`);
+    log.log('info', 'system', 'setup', `Server is listening on port ${PORT}`);
 } else {
-    log.log('error', 'system', `Error: ${error}`);
+    log.log('error', 'system', 'setup', `Error: ${error}`);
 }
 });
