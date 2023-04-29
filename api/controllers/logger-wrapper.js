@@ -16,11 +16,11 @@ const logger = winston.createLogger({
 });
 logger.info("Logger initialized");
 
-exports.log = function(level, user, message) {
+exports.log = function(level, user, endpoint, message) {
     if (level === "info") {
-        logger.info("[" + user + "] " + message);
+        logger.info("[" + user + "] " + message + " (" + endpoint + ")");
     }
     if (level === "error") {
-        logger.error("[" + user + "] " + message);
+        logger.error("[" + user + "] " + message + " (" + endpoint + ")");
     }
 };
