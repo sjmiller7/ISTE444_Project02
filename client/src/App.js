@@ -18,6 +18,7 @@ function App() {
   return (
     <div>
       <h1>Art Gallery</h1>
+      <p>{token.username}</p>
       <button type="submit" onClick={e => setToken(null)}>Logout</button>
       <BrowserRouter>
         <Routes>

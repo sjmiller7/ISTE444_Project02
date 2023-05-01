@@ -108,11 +108,12 @@ exports.view = async function (req, res) {
     result.records.forEach(record => {
       var id = -1;
       // Handling ids because they are so dumb
-      if (record.get('art').properties.id.low) {
-        id = record.get('art').properties.id.toNumber();
+    log.log('info', req.body.username, '/gallery/view', typeof record.get('id').properties);
+      if (typeof record.get('id').low !== 'undefined') {
+        id = record.get('id').low;
       }
       else {
-        id = record.get('art').properties.id;
+        id = record.get('id');
       }
       resultJSON.art.push({
         name: record.get('name'),
