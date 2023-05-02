@@ -1,13 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-export default function Home(art) {
+export default function Home(props) {
     return(
         <div>
-            <img src={art.art.img}></img>
-            <h3>{art.art.name} ({art.art.created})</h3>
-            <p>{art.art.artist}</p>
-            <p>{art.art.gallery}</p>
-            <button data-id={art.art.id}>View More</button>
+            <img src={props.art.img}></img>
+            <h3>{props.art.name} ({props.art.created})</h3>
+            <p>{props.art.artist}</p>
+            <p>{props.art.gallery}</p>
+            <Link to="/view" state={{ id: props.art.id }}>
+                <button>View More</button>
+            </Link>
         </div>
     );
 }

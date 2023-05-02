@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Preview from './Preview';
 
-export default function Home() {
-    let [data, setData] = useState([])
+export default function Home(props) {
+    let [data, setData] = useState([]);
     
     useEffect(() => {
-        callBackendAPI()
-          .then(res => setData(res.art) )
-          .catch(err => console.log(err));
-        console.log(data)
-
+        if (!data || data.length==0) {
+            callBackendAPI()
+            .then(res => setData(res.art) )
+            .catch(err => console.log(err));
+        }
           return () => {}
     });
 
     async function callBackendAPI() {
-        const response = await fetch('/gallery/view');
+        const response = await fetch('/gallery/view?username=' + props.username);
         const body = await response.json();
     
         if (response.status !== 200) {
@@ -26,7 +26,7 @@ export default function Home() {
   return(
     <div>
         <h2>Browse Art</h2>
-        <p>{data.length>0 && data.map(art => {return( <Preview art={art}/>)} )}</p>
+        {data && data.length>0 && data.map(art => {return( <Preview art={art}/>)} )}
     </div>
   );
 }

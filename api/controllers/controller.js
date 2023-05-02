@@ -75,7 +75,7 @@ exports.enter = async function (req, res) {
         var token = jwt.sign({ username: req.body.username }, process.env.SECRET);
         log.log('info', req.body.username, '/gallery/enter', "JWT generated");
         // Send result and token
-        return res.send(JSON.stringify({match: match, token: token}));
+        return res.send(JSON.stringify({match: match, token: token, username: req.body.username}));
       })
       // Catch errors
       .catch(err => log.log('error', '/gallery/enter', req.body.username, err.message)) 
@@ -91,9 +91,9 @@ exports.enter = async function (req, res) {
 // View all endpoint
 exports.view = async function (req, res) {
   // Log endpoint
-  log.log('info', req.body.username, '/gallery/view', "View all endpoint");
+  log.log('info', req.query.username, '/gallery/view', "View all endpoint");
   // Params
-  log.log('info', req.body.username, '/gallery/view', "Username: " + req.body.username);
+  log.log('info', req.query.username, '/gallery/view', "Username: " + req.query.username);
   // Make session
   var session = driver.session({database: 'neo4j'});
   session
@@ -108,7 +108,6 @@ exports.view = async function (req, res) {
     result.records.forEach(record => {
       var id = -1;
       // Handling ids because they are so dumb
-    log.log('info', req.body.username, '/gallery/view', typeof record.get('id').properties);
       if (typeof record.get('id').low !== 'undefined') {
         id = record.get('id').low;
       }
@@ -125,13 +124,13 @@ exports.view = async function (req, res) {
       });
     })
     // Log # of records
-    log.log('info', req.body.username, '/gallery/view', resultJSON.art.length + " records found");
+    log.log('info', req.query.username, '/gallery/view', resultJSON.art.length + " records found");
     // Send records
     res.send(JSON.stringify(resultJSON));
   })
   // Catch errors
   .catch(error => {
-      log.log('error', req.body.username, '/gallery/view', error)
+      log.log('error', req.query.username, '/gallery/view', error)
   })
   // Close session
   .then(() => session.close())
@@ -140,10 +139,10 @@ exports.view = async function (req, res) {
 // View one endpoint
 exports.viewOne = async function (req, res) {
   // Log endpoint
-  log.log('info', req.body.username, '/gallery/view/' + req.params.artID, "View one endpoint");
+  log.log('info', req.query.username, '/gallery/view/' + req.params.artID, "View one endpoint");
   // Params
-  log.log('info', req.body.username, '/gallery/view/' + req.params.artID, "Username: " + req.body.username);
-  log.log('info', req.body.username, '/gallery/view/' + req.params.artID, "Art piece: " + req.params.artID);
+  log.log('info', req.query.username, '/gallery/view/' + req.params.artID, "Username: " + req.query.username);
+  log.log('info', req.query.username, '/gallery/view/' + req.params.artID, "Art piece: " + req.params.artID);
   // Make session
   var session = driver.session({database: 'neo4j'});
   session
@@ -183,13 +182,13 @@ exports.viewOne = async function (req, res) {
     }
       
     // Log name of art
-    log.log('info', req.body.username, '/gallery/view/' + req.params.artID, "Retrieved info on '" + resultJSON.name + "'");
+    log.log('info', req.query.username, '/gallery/view/' + req.params.artID, "Retrieved info on '" + resultJSON.name + "'");
     // Send records
     res.send(JSON.stringify(resultJSON));
   })
   // Catch errors
   .catch(error => {
-      log.log('error', req.body.username, '/gallery/view/' + req.params.artID, error)
+      log.log('error', req.query.username, '/gallery/view/' + req.params.artID, error)
   })
   // Close session
   .then(() => session.close())
@@ -390,7 +389,7 @@ exports.curate = async function (req, res) {
 // Steal (delete) endpoint
 exports.steal = async function (req, res) {
   // Log endpoint
-  log.log('info', req.body.username, '/gallery/steal', "View one endpoint");
+  log.log('info', req.body.username, '/gallery/steal', "Steal endpoint");
   // Params
   log.log('info', req.body.username, '/gallery/steal', "Username: " + req.body.username);
   log.log('info', req.body.username, '/gallery/steal', "Art piece: " + req.body.artID);

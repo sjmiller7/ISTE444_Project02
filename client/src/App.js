@@ -1,5 +1,4 @@
 import React, { Component, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
@@ -10,9 +9,10 @@ import Create from './components/Create';
 
 function App() {
   const [token, setToken] = useState();
+  const [username, setUsername] = useState();
 
   if(!token) {
-    return <Login setToken={setToken} />
+    return <Login setToken={setToken} setUsername={setUsername} />
   }
 
   return (
@@ -22,10 +22,10 @@ function App() {
       <button type="submit" onClick={e => setToken(null)}>Logout</button>
       <BrowserRouter>
         <Routes>
-          <Route index element={<Home />} />
-          <Route path="/view" element={<View />} />
-          <Route path="/edit" element={<Edit />} />
-          <Route path="/create" element={<Create />} />
+          <Route index element={<Home username={username} />} />
+          <Route path="/view" element={<View username={username} />} />
+          <Route path="/edit" element={<Edit username={username} />} />
+          <Route path="/create" element={<Create username={username} />} />
         </Routes>
       </BrowserRouter>
     </div>

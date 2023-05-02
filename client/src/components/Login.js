@@ -12,7 +12,9 @@ async function loginUser(credentials) {
     .then(data => data.json())
 }
 
-export default function Login({ setToken }) {
+// Username is from App.js for holding the username in memory for the app
+// UserName is from Login.js for holding form input
+export default function Login({ setToken, setUsername }) {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
@@ -24,6 +26,7 @@ export default function Login({ setToken }) {
         });
         if (result.match) {
             setToken(result.token);
+            setUsername(result.username);
         }
     }
 
