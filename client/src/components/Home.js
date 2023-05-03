@@ -25,8 +25,12 @@ export default function Home(props) {
 
   return(
     <div>
-        <h2>Browse Art</h2>
-        {data && data.length>0 && data.map(art => {return( <Preview art={art}/>)} )}
+        <div className='cardBg headingCard'>
+          <h2>Browse Art</h2>
+        </div>
+        <div className='cardsContainer'>
+          {data && data.length>0 && data.map(art => {return( <Preview art={art}/>)} )}
+        </div>
     </div>
   );
 }

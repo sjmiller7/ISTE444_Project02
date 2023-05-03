@@ -89,7 +89,7 @@ export default function Donate(props) {
   }
   else if(artists && galleries) {
     return(
-      <div>
+      <div className='cardBg formBox'>
         <h2>New Art</h2>
         <form onSubmit={handleSubmit}>
           <label>

@@ -92,7 +92,7 @@ export default function Curate(props) {
   }
   else if(artists && galleries) {
     return(
-      <div>
+      <div className='cardBg formBox'>
         <h2>Edit "{state.data.name}"</h2>
         <form onSubmit={handleSubmit}>
           <label>

@@ -31,21 +31,25 @@ export default function Login({ setToken, setUsername }) {
     }
 
     return(
-        <form onSubmit={handleSubmit}>
-            <h1>Art Gallery</h1>
-            <h2>Login</h2>
-            <label>
-                <p>Username</p>
-                <input type="text" onChange={e => setUserName(e.target.value)} />
-            </label>
-            <label>
-                <p>Password</p>
-                <input type="password" onChange={e => setPassword(e.target.value)} />
-            </label>
-            <div>
-                <button type="submit">Submit</button>
+        <div className='loginWrapper'>
+            <div className='nav cardBg'>
+                <h1>Art Gallery</h1>
             </div>
-        </form>
+            <form className='formBox cardBg' onSubmit={handleSubmit}>
+                <h2>Login</h2>
+                <label>
+                    <p>Username</p>
+                    <input type="text" onChange={e => setUserName(e.target.value)} />
+                </label>
+                <label>
+                    <p>Password</p>
+                    <input type="password" onChange={e => setPassword(e.target.value)} />
+                </label>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
     )
 }
 
