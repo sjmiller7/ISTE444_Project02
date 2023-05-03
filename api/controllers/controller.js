@@ -75,7 +75,7 @@ exports.enter = async function (req, res) {
         var token = jwt.sign({ username: req.body.username }, process.env.SECRET);
         log.log('info', req.body.username, '/gallery/enter', "JWT generated");
         // Send result and token
-        return res.send(JSON.stringify({match: match, token: token}));
+        return res.send(JSON.stringify({match: match, token: token, username: req.body.username}));
       })
       // Catch errors
       .catch(err => log.log('error', '/gallery/enter', req.body.username, err.message)) 
@@ -91,9 +91,9 @@ exports.enter = async function (req, res) {
 // View all endpoint
 exports.view = async function (req, res) {
   // Log endpoint
-  log.log('info', req.body.username, '/gallery/view', "View all endpoint");
+  log.log('info', req.query.username, '/gallery/view', "View all endpoint");
   // Params
-  log.log('info', req.body.username, '/gallery/view', "Username: " + req.body.username);
+  log.log('info', req.query.username, '/gallery/view', "Username: " + req.query.username);
   // Make session
   var session = driver.session({database: 'neo4j'});
   session
@@ -108,11 +108,11 @@ exports.view = async function (req, res) {
     result.records.forEach(record => {
       var id = -1;
       // Handling ids because they are so dumb
-      if (record.get('art').properties.id.low) {
-        id = record.get('art').properties.id.toNumber();
+      if (typeof record.get('id').low !== 'undefined') {
+        id = record.get('id').low;
       }
       else {
-        id = record.get('art').properties.id;
+        id = record.get('id');
       }
       resultJSON.art.push({
         name: record.get('name'),
@@ -124,13 +124,13 @@ exports.view = async function (req, res) {
       });
     })
     // Log # of records
-    log.log('info', req.body.username, '/gallery/view', resultJSON.art.length + " records found");
+    log.log('info', req.query.username, '/gallery/view', resultJSON.art.length + " records found");
     // Send records
     res.send(JSON.stringify(resultJSON));
   })
   // Catch errors
   .catch(error => {
-      log.log('error', req.body.username, '/gallery/view', error)
+      log.log('error', req.query.username, '/gallery/view', error)
   })
   // Close session
   .then(() => session.close())
@@ -139,10 +139,10 @@ exports.view = async function (req, res) {
 // View one endpoint
 exports.viewOne = async function (req, res) {
   // Log endpoint
-  log.log('info', req.body.username, '/gallery/view/' + req.params.artID, "View one endpoint");
+  log.log('info', req.query.username, '/gallery/view/' + req.params.artID, "View one endpoint");
   // Params
-  log.log('info', req.body.username, '/gallery/view/' + req.params.artID, "Username: " + req.body.username);
-  log.log('info', req.body.username, '/gallery/view/' + req.params.artID, "Art piece: " + req.params.artID);
+  log.log('info', req.query.username, '/gallery/view/' + req.params.artID, "Username: " + req.query.username);
+  log.log('info', req.query.username, '/gallery/view/' + req.params.artID, "Art piece: " + req.params.artID);
   // Make session
   var session = driver.session({database: 'neo4j'});
   session
@@ -182,13 +182,13 @@ exports.viewOne = async function (req, res) {
     }
       
     // Log name of art
-    log.log('info', req.body.username, '/gallery/view/' + req.params.artID, "Retrieved info on '" + resultJSON.name + "'");
+    log.log('info', req.query.username, '/gallery/view/' + req.params.artID, "Retrieved info on '" + resultJSON.name + "'");
     // Send records
     res.send(JSON.stringify(resultJSON));
   })
   // Catch errors
   .catch(error => {
-      log.log('error', req.body.username, '/gallery/view/' + req.params.artID, error)
+      log.log('error', req.query.username, '/gallery/view/' + req.params.artID, error)
   })
   // Close session
   .then(() => session.close())
@@ -216,10 +216,16 @@ exports.donate = async function (req, res) {
   )
   // Calculate new highest id
   .then(result => {
-    newid = result.records[0].get('highest').low + 1;
-    log.log('info', req.body.username, '/gallery/donate', "New record id: " + newid);
+    // Handling ids because they are so dumb
+    if (typeof result.records[0].get('highest').low !== 'undefined') {
+      newid = result.records[0].get('highest').low;
+    }
+    else {
+      newid = result.records[0].get('highest');
+    }
     newid += "";
-    req.body.artProperties.id = parseInt(newid);
+    req.body.artProperties.id = parseInt(newid) + 1;
+    log.log('info', req.body.username, '/gallery/donate', "New record id: " + req.body.artProperties.id);
     
     // New session for new query
     var session2 = driver.session({database: 'neo4j'});
@@ -389,7 +395,7 @@ exports.curate = async function (req, res) {
 // Steal (delete) endpoint
 exports.steal = async function (req, res) {
   // Log endpoint
-  log.log('info', req.body.username, '/gallery/steal', "View one endpoint");
+  log.log('info', req.body.username, '/gallery/steal', "Steal endpoint");
   // Params
   log.log('info', req.body.username, '/gallery/steal', "Username: " + req.body.username);
   log.log('info', req.body.username, '/gallery/steal', "Art piece: " + req.body.artID);
@@ -416,6 +422,94 @@ exports.steal = async function (req, res) {
   // Catch errors
   .catch(error => {
       log.log('error', req.body.username, '/gallery/steal', error)
+  })
+  // Close session
+  .then(() => session.close())
+};
+
+// Get all galleries endpoint 
+exports.galleries = async function (req, res) {
+  // Log endpoint
+  log.log('info', req.query.username, '/gallery/galleries', "Get galleries endpoint");
+  // Params
+  log.log('info', req.query.username, '/gallery/galleries', "Username: " + req.query.username);
+  // Make session
+  var session = driver.session({database: 'neo4j'});
+  session
+  // Run query
+  .run(
+      'MATCH (gallery:Gallery) RETURN gallery.name as name, gallery.id as id'
+  )
+  // Process & send result
+  .then(result => {
+    // Convert to better JSON formatting
+    var resultJSON = { galleries: []};
+    result.records.forEach(record => {
+      var id = -1;
+      // Handling ids because they are so dumb
+      if (typeof record.get('id').low !== 'undefined') {
+        id = record.get('id').low;
+      }
+      else {
+        id = record.get('id');
+      }
+      resultJSON.galleries.push({
+        name: record.get('name'),
+        id: id
+      });
+    })
+    // Log # of records
+    log.log('info', req.query.username, '/gallery/galleries', resultJSON.galleries.length + " records found");
+    // Send records
+    res.send(JSON.stringify(resultJSON));
+  })
+  // Catch errors
+  .catch(error => {
+      log.log('error', req.query.username, '/gallery/galleries', error)
+  })
+  // Close session
+  .then(() => session.close())
+};
+
+// Get all galleries endpoint 
+exports.artists = async function (req, res) {
+  // Log endpoint
+  log.log('info', req.query.username, '/gallery/artists', "Get artists endpoint");
+  // Params
+  log.log('info', req.query.username, '/gallery/artists', "Username: " + req.query.username);
+  // Make session
+  var session = driver.session({database: 'neo4j'});
+  session
+  // Run query
+  .run(
+      'MATCH (artist:Artist) RETURN artist.name as name, artist.id as id'
+  )
+  // Process & send result
+  .then(result => {
+    // Convert to better JSON formatting
+    var resultJSON = { artists: []};
+    result.records.forEach(record => {
+      var id = -1;
+      // Handling ids because they are so dumb
+      if (typeof record.get('id').low !== 'undefined') {
+        id = record.get('id').low;
+      }
+      else {
+        id = record.get('id');
+      }
+      resultJSON.artists.push({
+        name: record.get('name'),
+        id: id
+      });
+    })
+    // Log # of records
+    log.log('info', req.query.username, '/gallery/artists', resultJSON.artists.length + " records found");
+    // Send records
+    res.send(JSON.stringify(resultJSON));
+  })
+  // Catch errors
+  .catch(error => {
+      log.log('error', req.query.username, '/gallery/artists', error)
   })
   // Close session
   .then(() => session.close())

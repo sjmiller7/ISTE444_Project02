@@ -1,40 +1,35 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { Component, useState } from 'react';
 import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Login from './components/Login';
+import Home from './components/Home';
+import View from './components/View';
+import Curate from './components/Curate';
+import Donate from './components/Donate';
 
-class App extends Component {
-state = {
-    data: null
-  };
+function App() {
+  const [token, setToken] = useState();
+  const [username, setUsername] = useState();
 
-  componentDidMount() {
-    this.callBackendAPI()
-      .then(res => this.setState({ data: res.test }))
-      .catch(err => console.log(err));
+  if(!token) {
+    return <Login setToken={setToken} setUsername={setUsername} />
   }
-  // Testing test route from server
-  callBackendAPI = async () => {
-    const response = await fetch('/gallery/test');
-    const body = await response.json();
-    console.log(body)
 
-    if (response.status !== 200) {
-      throw Error(body.message) 
-    }
-    return body;
-  };
-
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">{this.state.data}</p>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h1>Art Gallery</h1>
+      <p>{token.username}</p>
+      <button type="submit" onClick={e => setToken(null)}>Logout</button>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Home username={username} />} />
+          <Route path="/view" element={<View username={username} />} />
+          <Route path="/curate" element={<Curate username={username} />} />
+          <Route path="/donate" element={<Donate username={username} />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 export default App;
