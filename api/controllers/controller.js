@@ -14,7 +14,7 @@ const log = require("./logger-wrapper.js");
 try {
     var driver = neo4j.driver(
         'neo4j://localhost',
-        neo4j.auth.basic(process.env.USER, process.env.PASSWORD)
+        neo4j.auth.basic('neo4j', process.env.PASSWORD)
       );
     log.log('info', 'system', 'setup', 'Database connection estabilished');
   } catch(err) {
