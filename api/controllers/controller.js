@@ -216,10 +216,16 @@ exports.donate = async function (req, res) {
   )
   // Calculate new highest id
   .then(result => {
-    newid = result.records[0].get('highest').low + 1;
-    log.log('info', req.body.username, '/gallery/donate', "New record id: " + newid);
+    // Handling ids because they are so dumb
+    if (typeof result.records[0].get('highest').low !== 'undefined') {
+      newid = result.records[0].get('highest').low;
+    }
+    else {
+      newid = result.records[0].get('highest');
+    }
     newid += "";
-    req.body.artProperties.id = parseInt(newid);
+    req.body.artProperties.id = parseInt(newid) + 1;
+    log.log('info', req.body.username, '/gallery/donate', "New record id: " + req.body.artProperties.id);
     
     // New session for new query
     var session2 = driver.session({database: 'neo4j'});
@@ -416,6 +422,94 @@ exports.steal = async function (req, res) {
   // Catch errors
   .catch(error => {
       log.log('error', req.body.username, '/gallery/steal', error)
+  })
+  // Close session
+  .then(() => session.close())
+};
+
+// Get all galleries endpoint 
+exports.galleries = async function (req, res) {
+  // Log endpoint
+  log.log('info', req.query.username, '/gallery/galleries', "Get galleries endpoint");
+  // Params
+  log.log('info', req.query.username, '/gallery/galleries', "Username: " + req.query.username);
+  // Make session
+  var session = driver.session({database: 'neo4j'});
+  session
+  // Run query
+  .run(
+      'MATCH (gallery:Gallery) RETURN gallery.name as name, gallery.id as id'
+  )
+  // Process & send result
+  .then(result => {
+    // Convert to better JSON formatting
+    var resultJSON = { galleries: []};
+    result.records.forEach(record => {
+      var id = -1;
+      // Handling ids because they are so dumb
+      if (typeof record.get('id').low !== 'undefined') {
+        id = record.get('id').low;
+      }
+      else {
+        id = record.get('id');
+      }
+      resultJSON.galleries.push({
+        name: record.get('name'),
+        id: id
+      });
+    })
+    // Log # of records
+    log.log('info', req.query.username, '/gallery/galleries', resultJSON.galleries.length + " records found");
+    // Send records
+    res.send(JSON.stringify(resultJSON));
+  })
+  // Catch errors
+  .catch(error => {
+      log.log('error', req.query.username, '/gallery/galleries', error)
+  })
+  // Close session
+  .then(() => session.close())
+};
+
+// Get all galleries endpoint 
+exports.artists = async function (req, res) {
+  // Log endpoint
+  log.log('info', req.query.username, '/gallery/artists', "Get artists endpoint");
+  // Params
+  log.log('info', req.query.username, '/gallery/artists', "Username: " + req.query.username);
+  // Make session
+  var session = driver.session({database: 'neo4j'});
+  session
+  // Run query
+  .run(
+      'MATCH (artist:Artist) RETURN artist.name as name, artist.id as id'
+  )
+  // Process & send result
+  .then(result => {
+    // Convert to better JSON formatting
+    var resultJSON = { artists: []};
+    result.records.forEach(record => {
+      var id = -1;
+      // Handling ids because they are so dumb
+      if (typeof record.get('id').low !== 'undefined') {
+        id = record.get('id').low;
+      }
+      else {
+        id = record.get('id');
+      }
+      resultJSON.artists.push({
+        name: record.get('name'),
+        id: id
+      });
+    })
+    // Log # of records
+    log.log('info', req.query.username, '/gallery/artists', resultJSON.artists.length + " records found");
+    // Send records
+    res.send(JSON.stringify(resultJSON));
+  })
+  // Catch errors
+  .catch(error => {
+      log.log('error', req.query.username, '/gallery/artists', error)
   })
   // Close session
   .then(() => session.close())

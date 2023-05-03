@@ -22,4 +22,10 @@ router.put("/curate", app.curate);
 // Route for updating art piece
 router.delete("/steal", app.steal);
 
+// Route for getting all gallery options
+router.get("/galleries", app.galleries);
+
+// Route for getting all gallery options
+router.get("/artists", app.artists);
+
 module.exports = router;

@@ -56,12 +56,13 @@ export default function View(props) {
         </Link>
         <img src={data.img}></img>
         <h2>{data.name} ({data.created})</h2>
-        {data.style ? <p><b>Style:</b> {data.style}</p> : null}
+        <p><b>Type:</b> {data.type}</p>
         <p><b>Media:</b> {data.media}</p>
+        {data.style ? <p><b>Style:</b> {data.style}</p> : null}
         <p><b>Artist:</b> {data.artist.name} ({data.artist.born} - {data.artist.died})</p>
         <p><b>Gallery:</b> {data.gallery.name} ({data.gallery.city}, {data.gallery.country}){data.gallery.since ? ' since ' + data.gallery.since : null}</p>
-        <Link to="/edit">
-            <button>Edit</button>
+        <Link to="/curate"  state={{ data: data }}>
+            <button>Curate</button>
         </Link>
         <button onClick={deleteArt}>Delete</button>
       </div>

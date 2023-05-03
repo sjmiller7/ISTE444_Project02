@@ -4,8 +4,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
 import Home from './components/Home';
 import View from './components/View';
-import Edit from './components/Edit';
-import Create from './components/Create';
+import Curate from './components/Curate';
+import Donate from './components/Donate';
 
 function App() {
   const [token, setToken] = useState();
@@ -24,8 +24,8 @@ function App() {
         <Routes>
           <Route index element={<Home username={username} />} />
           <Route path="/view" element={<View username={username} />} />
-          <Route path="/edit" element={<Edit username={username} />} />
-          <Route path="/create" element={<Create username={username} />} />
+          <Route path="/curate" element={<Curate username={username} />} />
+          <Route path="/donate" element={<Donate username={username} />} />
         </Routes>
       </BrowserRouter>
     </div>

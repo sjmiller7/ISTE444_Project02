@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Home(props) {
+export default function Preview(props) {
     return(
         <div>
             <img src={props.art.img}></img>
